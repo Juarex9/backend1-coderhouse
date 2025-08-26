@@ -42,8 +42,8 @@ socket.on("messages-logs", (data) => {
     let listMessages = "";
     const p = document.createElement("p");
     data.forEach((msg) => {
-        listMessages = `${msg.user} dice: ${msg.message}`;
+        listMessages = `${msg.user} : ${msg.message}`;
         p.innerHTML = listMessages;
     });
-    messages.appendChild(p);
+    messages.appendChild(p);    
 });
