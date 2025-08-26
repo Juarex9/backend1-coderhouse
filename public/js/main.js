@@ -1,6 +1,6 @@
 const socket = io();
 const userName = document.querySelector("#username"),
-messages = document.querySelector("#message"),
+messages = document.querySelector("#messages"),
 inputMessage = document.querySelector("#mesaggeInput"),
 btnSend = document.querySelector("#sendMessageBtn");
 
@@ -36,4 +36,14 @@ btnSend.addEventListener("click", () => {
         socket.emit("message", {user, message: inputMessage.value});
         inputMessage.value = "";
     };
+});
+
+socket.on("messages-logs", (data) => {
+    let listMessages = "";
+    const p = document.createElement("p");
+    data.forEach((msg) => {
+        listMessages = `${msg.user} dice: ${msg.message}`;
+        p.innerHTML = listMessages;
+    });
+    messages.appendChild(p);
 });

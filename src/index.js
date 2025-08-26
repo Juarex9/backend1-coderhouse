@@ -1,9 +1,9 @@
 import express from "express";
 import { engine } from "express-handlebars";
-import {join,__dirname} from "./utils/index.js";
+import { join, __dirname } from "./utils/index.js";
 import viewRoutes from "./routes/view.routes.js";
 //import socket
-import {Server} from "socket.io";
+import { Server } from "socket.io";
 
 
 
@@ -17,7 +17,7 @@ const server = app.listen(app.get("PORT"), () => {
 const io = new Server(server);
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
-app.set("views", join(__dirname,'views'));
+app.set("views", join(__dirname, 'views'));
 
 // console.log(join(__dirname, "views"));
 // console.log(join(__dirname, "../public"));
@@ -31,12 +31,18 @@ app.use(express.static(join(__dirname, "../public")));
 app.use("/", viewRoutes);
 
 //llamar socketio
+let messages = [];
 io.on("connection", (socket) => {
   console.log("nuevo cliente conectado", socket.id);
   socket.on("message", (data) => {
-    console.log(data);
+    messages.push({
+      id: socket.id,
+      ...data
+    });
+    io.emit("messages-logs", messages);
+
   });
-  // socket.emit('evento:individual', 'hola don josé');
-  // socket.broadcast.emit('evento:todos', 'hola a todos, menos a mí');
-  // io.emit('evento:todos', "hola a todos, incluido yo");
+  // socket.emit('evento:individual', 'hola don josé'); /// evento individual
+  // socket.broadcast.emit('evento:todos', 'hola a todos, menos a mí'); /// evento a todos menos a mí
+  // io.emit('evento:todos', "hola a todos, incluido yo"); /// evento a todos (incluyéndome a mí)
 });
